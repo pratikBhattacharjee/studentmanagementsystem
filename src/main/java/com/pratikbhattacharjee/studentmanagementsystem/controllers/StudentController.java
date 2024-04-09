@@ -6,12 +6,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.Optional;
 
 @Controller
 public class StudentController {
 
     private StudentService studentService;
+
+    private static final String MAINREDIRECT = "redirect:/student/all";
 
 
     public StudentController(StudentService studentService) {
@@ -36,6 +41,34 @@ public class StudentController {
     @PostMapping("/students")
     public String saveStudent(@ModelAttribute("student") Student student){
         studentService.saveStudent(student);
-        return "redirect:/student/all";
+        return MAINREDIRECT;
     }
+
+    @GetMapping("/student/edit/{id}")
+    public String editStudent(@PathVariable("id") Long id, Model model){
+        Optional<Student> student = studentService.findById(id);
+        if(student.isPresent()){
+            model.addAttribute("student", student.get());
+            return "edit_student";
+        }else{
+            return MAINREDIRECT;
+        }
+    }
+
+    @PostMapping("/students/{id}")
+    public String editStudentRequestHandler(@PathVariable("id") Long id, Student student){
+        student.setId(id);
+        //Potential error: The below method actually doesn't edit
+        studentService.saveStudent(student);
+        return MAINREDIRECT;
+    }
+
+    @GetMapping("/student/delete/{id}")
+    public String deleteStudent(@PathVariable("id") Long id, Model model){
+        studentService.deleteById(id);
+        return MAINREDIRECT;
+    }
+
+
+
 }

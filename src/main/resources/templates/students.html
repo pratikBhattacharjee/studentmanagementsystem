@@ -31,9 +31,9 @@
                     <td th:text="${student.getFirstName()}"></td>
                     <td th:text="${student.getLastName()}"></td>
                     <td th:text="${student.getEmail()}"></td>
-
+                    <td><a class="btn btn-primary" th:href="@{/student/edit/{id}(id=${student.id})}">Edit</a>
+                    <a class="btn btn-danger" th:href="@{/student/delete/{id}(id=${student.id})}">Delete</a></td>
                 </tr>
-
             </tbody>
 
         </table>
